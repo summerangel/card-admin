@@ -121,16 +121,4 @@ class Login extends React.Component {
   }
 }
 
-// const mapStateToProps = (state) => {
-//   const {
-//     login: { mobile, code, verifyCodeWaiting },
-//   } = state;
-//
-//   return {
-//     mobile,
-//     code,
-//     verifyCodeWaiting,
-//   };
-// };
-// export default connect(mapStateToProps)(Form.create()(Login));
 export default Login;

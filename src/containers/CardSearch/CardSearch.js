@@ -2,19 +2,14 @@
  * Created by summer on 2018/12/27.
  */
 import React, { Component } from 'react';
-import { Select, Table, DatePicker, Button, Form, Input, Row, Col } from 'antd';
-import { isEmpty } from 'lodash';
+import { Table, Button, Form, Input, Row, Col, message } from 'antd';
 
 import EBreadcrumb from '../../components/Breadcrumb/EBreadcrumb';
-import { api, request } from '../../modules/request';
-import { formatDate } from '../../modules/utils';
+import api, { request } from '../../modules/request';
 
 import './CardSearch.scss';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-
-const SELECTED_ATTR = ['selectedTermDate', 'selectedCardType', 'selectedCity'];
 const tableTitle = [
   {
     title: '卡号',
@@ -28,8 +23,8 @@ const tableTitle = [
   },
   {
     title: '发行方名称',
-    dataIndex: 'cardRelease',
-    key: 'cardRelease',
+    dataIndex: 'issuerName',
+    key: 'issuerName',
   },
   {
     title: '会员名称',
@@ -38,13 +33,13 @@ const tableTitle = [
   },
   {
     title: '权益金额',
-    dataIndex: 'rightAmount',
-    key: 'rightAmount',
+    dataIndex: 'interestsAmount',
+    key: 'interestsAmount',
   },
   {
     title: '已使用金额',
-    dataIndex: 'usedAmount',
-    key: 'usedAmount',
+    dataIndex: 'usageAmount',
+    key: 'usageAmount',
   },
 ];
 
@@ -60,116 +55,47 @@ export default class CardSearch extends Component {
         name: '会员卡查询',
       },
     ],
-    cardType: [
-      {
-        text: '黄金会员',
-        value: 'gold_member',
-      },
-      {
-        text: '钻石会员',
-        value: 'diamand_member',
-      },
-      {
-        text: 'VIP会员',
-        value: 'vip_member',
-      },
-    ],
-    selectedCardType: 'gold_member',
-    cardList: [
-      {
-        id: 1,
-        cardNo: '123445',
-        cardName: '黄金会员',
-        cardRelease: '悦诗风吟',
-        memberName: '张三',
-        rightAmount: 20,
-        usedAmount: 0,
-      },
-      {
-        id: 2,
-        cardNo: '123445',
-        cardName: '黄金会员',
-        cardRelease: '悦诗风吟',
-        memberName: '张三',
-        rightAmount: 20,
-        usedAmount: 0,
-      },
-      {
-        id: 3,
-        cardNo: '123445',
-        cardName: '黄金会员',
-        cardRelease: '悦诗风吟',
-        memberName: '张三',
-        rightAmount: 20,
-        usedAmount: 0,
-      },
-    ],
+    cardList: [],
+    mobile: '18017237797',
   };
 
   componentDidMount() {
-    // this.fetchCityListData();
+    this.fetchCardListData();
   }
 
-  fetchCityListData = () => {
+  fetchCardListData = () => {
     request
-      .get(api.TASK_CITY_LIST_API, {
-        merchantId: this.state.merchantId,
+      .post(api.GW_INTERACT_API, {
+        serviceName: 'queryMemberCard',
+        identityValue: this.state.mobile,
       })
       .then((res) => {
-        this.setState((state, props) => {
-          return {
-            city: res.data,
-            selectedCity: res.data[0].key,
-          };
-        }, this.fetchTaskListData);
+        console.log(res);
+        this.setState({
+          cardList: res,
+        });
       })
       .catch((e) => {
         console.log(e);
-      });
-  };
-
-  fetchTaskListData = () => {
-    const { dateMonth, selectedCardType, selectedCity } = this.state;
-    request
-      .get(api.TASK_LIST_API, {
-        dateMonth: dateMonth,
-        assetType: selectedCardType,
-        cityCode: selectedCity,
-        merchantId: localStorage.getItem('merchantId'),
-        pageNum: 1,
-        pageSize: 100,
-      })
-      .then((res) => {
-        if (!!res.data) {
-          this.setState({
-            taskListData: res.data.content,
-          });
+        if (e.responseCode === 'card01') {
+          message.error(e.responseMsg);
         }
-      })
-      .catch((e) => {
-        console.log(e);
       });
   };
 
-  handleSelectChange = (value, type = SELECTED_ATTR[0]) => {
-    this.setState((state, props) => {
-      return {
-        [type]: value,
-      };
-    }, this.fetchTaskListData);
+  handleSubmit = () => {
+    this.fetchCardListData();
   };
 
-  handleDateChange = (date, dateString) => {
-    console.log(date, formatDate(dateString));
-    this.setState((state, props) => {
-      return {
-        dateMonth: formatDate(dateString),
-      };
-    }, this.fetchTaskListData);
+  inputChange = (e) => {
+    const value = e.target.value;
+    this.setState({
+      mobile: value,
+    });
   };
 
   render() {
-    const { breadData, cardType, cardList } = this.state;
+    const { breadData, mobile, cardList } = this.state;
     return (
       <div className="card-search-wrapper">
         <EBreadcrumb breadData={breadData} />
@@ -180,7 +106,14 @@ export default class CardSearch extends Component {
           <Row>
             <Col span={7}>
               <FormItem label="手机号">
-                <Input placeholder="请输入手机号" type="number" maxLength={11} minLength={10} />
+                <Input
+                  placeholder="请输入手机号"
+                  type="number"
+                  maxLength={11}
+                  minLength={10}
+                  value={mobile}
+                  onChange={this.inputChange}
+                />
               </FormItem>
             </Col>
             <Col span={4}>
@@ -189,7 +122,12 @@ export default class CardSearch extends Component {
                   marginLeft: '20px',
                 }}
               >
-                <Button type="primary" htmlType="submit" className="buttonStyle">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="buttonStyle"
+                  onClick={this.handleSubmit}
+                >
                   查询
                 </Button>
               </FormItem>

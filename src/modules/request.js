@@ -1,28 +1,42 @@
-// import URL from 'url-parse';
+import URL from 'url-parse';
 import qs from 'qs';
 import { isEmpty, isString } from './utils';
-import { NETWORK_ERROR } from './ENUM';
 import { api } from './api-config';
+
+const NETWORK_ERROR = '网络连接异常';
+const TOKEN_MARK = 'token';
+const TOKEN =
+  'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1MjM4NzY2NTU2ODk3NjA3NjgiLCJzdWIiOiJ7XCJvcGVuSWRcIjo1MjM4NzY2NTU2ODk3NjA3NjgsXCJwYXJ0bmVyXCI6MTAwMDAwfSIsImlzcyI6IkZFIiwiaWF0IjoxNTQ1ODc3OTA0LCJleHAiOjE1NDY0ODI3MDR9.xhDyGgSewNfAbIwkfrAW53WXVPaajtocTS4FWBXjurQ';
 
 const defaultOptions = {
   headers: {
-    token: localStorage.getItem('token'),
-    // 'Content-Type': 'application/json',
+    'Content-Type': 'application/json',
+    partner: 100000,
+    version: 'v1.0',
+    sign: '',
+    // 'token': TOKEN
+    token: '',
   },
+  //   mode: "no-cors",
   credentials: 'same-origin',
 };
 
 function jsonResponseHandler(data, apiOptions) {
   return Promise.resolve(data);
 }
+
 export const request = {
-  sendRequest(url, options = {}) {
+  async sendRequest(url, options = {}) {
     if (!isEmpty(options.qs)) {
       url = this.addQueryString(url, options.qs);
     }
 
     url = this.normalizeRestfulParams(url, options);
+
+    let token = localStorage.getItem(TOKEN_MARK) || TOKEN;
+
     const ops = { ...defaultOptions };
+    ops.headers.token = token;
     if (!isEmpty(options) && !isEmpty(options.headers)) {
       ops.headers = Object.assign({}, ops.headers, options.headers);
       delete options.headers;
@@ -30,12 +44,6 @@ export const request = {
     this.options = Object.assign({}, ops, options);
 
     const apiOptions = Object.assign({}, this.options, options);
-    // const apiOptions = { ...defaultOptions, options };
-    // apiOptions.headers = Object.assign(
-    //   {},
-    //   defaultOptions.headers,
-    //   options.headers
-    // );
     return fetch(url, apiOptions)
       .then((response) => {
         if (!response.ok) {
@@ -50,15 +58,17 @@ export const request = {
         return response.json();
       })
       .then(
-        (data) => {
-          const { responseCode, responseMsg } = data;
-          if (responseCode === '000' || responseCode === 'operator26') {
-            return data;
-          } else if (responseCode === 'operator31' || responseCode === 'token_error01') {
-            /* eslint-disable */
-            location.href = '/#/login';
+        async (data) => {
+          const { responseCode } = data;
+          if (responseCode === '000') {
+            if (!!apiOptions.allData) {
+              // 是否返回所有的数据，包括 应答码
+              return data;
+            }
+            return data.data;
+          } else if (responseCode === 'gateway01') {
+            window.location.href = '/login';
           } else {
-            // msg('error', responseMsg);
             return Promise.reject(data);
           }
         },
@@ -66,14 +76,12 @@ export const request = {
       );
   },
   get(url, params = {}, options = {}) {
-    options = Object.assign({}, options, { headers: { 'Content-Type': 'application/json' } });
     if (!isEmpty(params)) {
       url = addQueryString(url, params);
     }
     return this.sendRequest(url, options);
   },
   post(url, data = {}, options = {}) {
-    options = Object.assign({}, options, { headers: { 'Content-Type': 'application/json' } });
     return this.sendRequest(url, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -93,26 +101,6 @@ export const request = {
       body: JSON.stringify(data),
       ...options,
     });
-  },
-  uploadFile(url, data, options = {}) {
-    const formData = new FormData();
-
-    if (!isEmpty(data)) {
-      for (const key in data) {
-        formData.append(key, data[key]);
-      }
-    }
-
-    const apiOptions = Object.assign(
-      {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin',
-      },
-      options
-    );
-
-    return this.sendRequest(url, apiOptions);
   },
   upload(url, inputFiles, extraData, fileFieldName, options = {}) {
     const formData = new FormData();
@@ -146,11 +134,8 @@ export const request = {
     return formatRestfulUrl(url, restParams);
   },
 };
-/*eslint-disable*/
-export function getQuery(url = location.href) {
-  const obj = new URL(url, true);
-  return obj.query;
-}
+
+export default api;
 
 function addQueryString(url, params, baseUrl = '', noHost = false) {
   if (isEmpty(params)) return url;
@@ -164,6 +149,7 @@ function addQueryString(url, params, baseUrl = '', noHost = false) {
 function normalizeRestfulParams(url, { restParams = [] } = {}) {
   return formatRestfulUrl(url, restParams);
 }
+
 /**
  * Simplify the rest parameters creation, e.g:
  * //NOTICE: order of params in array is important, params use object do not care about order
@@ -186,4 +172,3 @@ export const formatRestfulUrl = function(url, params) {
   });
   return parts.join('/');
 };
-export { api, NETWORK_ERROR };

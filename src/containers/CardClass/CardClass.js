@@ -6,7 +6,7 @@ import { Select, Table, DatePicker, Button } from 'antd';
 import { isEmpty } from 'lodash';
 
 import EBreadcrumb from '../../components/Breadcrumb/EBreadcrumb';
-import { api, request } from '../../modules/request';
+import api, { request } from '../../modules/request';
 
 import './CardClass.scss';
 const Option = Select.Option;
@@ -19,40 +19,40 @@ const tableTitle = [
     key: 'cardName',
   },
   {
-    title: '卡编码',
-    dataIndex: 'cardCode',
-    key: 'cardCode',
+    title: '级别',
+    dataIndex: 'cardLevel',
+    key: 'cardLevel',
   },
   {
     title: '背景图',
-    dataIndex: 'cardBg',
-    key: 'cardBg',
+    dataIndex: 'cardUrl',
+    key: 'cardUrl',
   },
   {
     title: 'logo图',
-    dataIndex: 'cardLogo',
-    key: 'cardLogo',
+    dataIndex: 'logoUrl',
+    key: 'logoUrl',
   },
   {
     title: '卡介绍',
-    dataIndex: 'cardDesc',
-    key: 'cardDesc',
+    dataIndex: 'instructions',
+    key: 'instructions',
   },
   {
     title: '上限值',
-    dataIndex: 'cardMax',
-    key: 'cardMax',
+    dataIndex: 'maxValue',
+    key: 'maxValue',
   },
   {
     title: '下限值',
-    dataIndex: 'cardMin',
-    key: 'cardMin',
+    dataIndex: 'minValue',
+    key: 'minValue',
   },
-  {
-    title: '有限期',
-    dataIndex: 'validdate',
-    key: 'validdate',
-  },
+  // {
+  //   title: '有限期',
+  //   dataIndex: 'validdate',
+  //   key: 'validdate',
+  // },
 ];
 export default class CardClass extends Component {
   state = {
@@ -81,49 +81,35 @@ export default class CardClass extends Component {
       },
     ],
     selectedCardType: 'gold_member',
-    cardList: [
-      {
-        id: 1,
-        cardName: '黄金会员卡',
-        cardCode: '测试商户',
-        cardBg: 'https://www.freeexchange.cn/assets/innisfree.jpeg',
-        cardLogo: 'https://www.freeexchange.cn/assets/innisfreeLogo.jpeg',
-        cardDesc: '测试商户',
-        cardMax: '20',
-        cardMin: '8',
-        validdate: '2019.12.1',
-      },
-      {
-        id: 2,
-        cardName: '黄金会员卡',
-        cardCode: '测试商户',
-        cardBg: 'https://www.freeexchange.cn/assets/innisfree.jpeg',
-        cardLogo: 'https://www.freeexchange.cn/assets/innisfreeLogo.jpeg',
-        cardDesc: '测试商户',
-        cardMax: '20',
-        cardMin: '8',
-        validdate: '2019.12.1',
-      },
-      {
-        id: 3,
-        cardName: '黄金会员卡',
-        cardCode: '测试商户',
-        cardBg: 'https://www.freeexchange.cn/assets/innisfree.jpeg',
-        cardLogo: 'https://www.freeexchange.cn/assets/innisfreeLogo.jpeg',
-        cardDesc: '测试商户',
-        cardMax: '20',
-        cardMin: '8',
-        validdate: '2019.12.1',
-      },
-    ],
+    cardList: [],
   };
+
+  componentDidMount() {
+    this.fetchCardClass();
+  }
 
   handleSelectChange = (value, type = SELECTED_ATTR[0]) => {
     this.setState((state, props) => {
       return {
         [type]: value,
       };
-    }, this.fetchTaskListData);
+    }, this.fetchCardClass);
+  };
+
+  fetchCardClass = () => {
+    request
+      .post(api.GW_INTERACT_API, {
+        serviceName: 'queryPartnerCardLevels',
+      })
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          cardList: res,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   render() {

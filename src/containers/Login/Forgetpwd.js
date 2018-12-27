@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Form, Icon, Input, Button } from 'antd';
 import { InputPwd } from '../../components/FormInput/FormInput';
 import './Login.scss';
-import { request, api } from '../../modules/request';
+import api, { request } from '../../modules/request';
 import { msg } from '../../modules/common';
 import { setStorage } from '../../modules/utils';
 import { checkPhoneNumber, checkPassword } from '../../modules/input-test';
@@ -12,7 +12,7 @@ const { Header, Content } = Layout;
 const FormItem = Form.Item;
 
 function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
+  return Object.keys(fieldsError).some((field) => fieldsError[field]);
 }
 
 class Login extends React.Component {
@@ -66,23 +66,25 @@ class Login extends React.Component {
   //     }
   //   });
   // };
-  getUserDetail = e => {
+  getUserDetail = (e) => {
     e.preventDefault();
 
     let userid = '2';
-    request.get(api.USER_USER_DETAIL, {}, { restParams: { userid } }).then(res => {}, error => {});
+    request
+      .get(api.USER_USER_DETAIL, {}, { restParams: { userid } })
+      .then((res) => {}, (error) => {});
   };
-  mobileChange = e => {
+  mobileChange = (e) => {
     e.preventDefault();
 
     const mobile = e.target.value.replace(/\D/g, '');
     // this.props.dispatch(setMobile(mobile));
   };
-  codeChange = e => {
+  codeChange = (e) => {
     const code = e.target.value.replace(/\D/g, '');
     // this.props.dispatch(setVerifyCode(code));
   };
-  getCode = e => {
+  getCode = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       const checkPnResult = checkPhoneNumber(values.mobile);
@@ -95,7 +97,7 @@ class Login extends React.Component {
       }
 
       request.get(api.FORGET_SEND_CODE, { mobile: values.mobile, type: '2' }).then(
-        res => {
+        (res) => {
           if (res.responseCode === '000') {
             this.counter();
             msg('success', '验证码发送成功');
@@ -103,13 +105,13 @@ class Login extends React.Component {
             msg('error', res.responseMsg);
           }
         },
-        error => {
+        (error) => {
           msg('error', error.responseMsg);
         }
       );
     });
   };
-  counter = e => {
+  counter = (e) => {
     let that = this;
     that.data.computedTime = 60;
     that.timer = setInterval(() => {
@@ -180,7 +182,12 @@ class Login extends React.Component {
                   )}
 
                   {!this.data.computedTime ? (
-                    <Button type="primary" size="large" className="get-code" onClick={this.getCode.bind(this)}>
+                    <Button
+                      type="primary"
+                      size="large"
+                      className="get-code"
+                      onClick={this.getCode.bind(this)}
+                    >
                       获取验证码
                     </Button>
                   ) : (

@@ -6,7 +6,7 @@ import { Select, Table, DatePicker, Button } from 'antd';
 import { isEmpty } from 'lodash';
 
 import EBreadcrumb from '../../components/Breadcrumb/EBreadcrumb';
-import { api, request } from '../../modules/request';
+import api, { request } from '../../modules/request';
 
 import './CardType.scss';
 
@@ -40,23 +40,27 @@ export default class CardType extends Component {
         name: '类型管理',
       },
     ],
-    cardList: [
-      {
-        id: 1,
-        name: '黄金会员',
-        code: '商家介绍',
-      },
-      {
-        id: 2,
-        name: '铂金会员',
-        code: '商家介绍2',
-      },
-      {
-        id: 3,
-        name: '普通会员',
-        code: '商家介绍3',
-      },
-    ],
+    cardList: [],
+  };
+
+  componentDidMount() {
+    this.fetchCardType();
+  }
+
+  fetchCardType = () => {
+    request
+      .post(api.GW_INTERACT_API, {
+        serviceName: 'queryCardTypes',
+      })
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          cardList: res,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   render() {
