@@ -1,5 +1,5 @@
 import React, { Component, createElement } from 'react';
-import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'; // BrowserRouter HashRouter
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'; // BrowserRouter HashRouter
 import { Layout, Button } from 'antd';
 
 import './App.scss';
@@ -27,8 +27,8 @@ const NoMatch = ({ location, linkElement = 'a', actions }) => (
             createElement(
               linkElement,
               {
-                to: '#/dashboard',
-                href: '#/dashboard',
+                to: '/dashboard',
+                href: '/dashboard',
               },
               <Button type="primary">返回首页</Button>
             )}
@@ -43,7 +43,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Router>
+        <Router basename="/admin">
           <Switch>
             <Route
               exact
@@ -75,7 +75,6 @@ class App extends Component {
                 </Layout>
               )}
             />
-            {/* 授权管理 */}
             <Route
               path="/author"
               render={({ match: { url }, location }) => (

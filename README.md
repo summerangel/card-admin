@@ -9,6 +9,6 @@ proxy2=/gw/*=http://gw.freeexchange.cn
 proxy3=/test/*=http://gw.freeexchange.cn
 ```
 
-3、安装好后，运行： `yarn start`,浏览器会自动打开：http://localhost:3000/card/
+3、安装好后，运行： `yarn start`,浏览器会自动打开：http://localhost:3000/admin/
 
 4、打包： `yarn run build`, 将生成的 build 文件放到服务器上
