@@ -1,4 +1,4 @@
-import URL from 'url-parse';
+// import URL from 'url-parse';
 import qs from 'qs';
 import { isEmpty, isString } from './utils';
 import { NETWORK_ERROR } from './ENUM';
