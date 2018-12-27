@@ -8,6 +8,7 @@ import { TopHeader, SiderBar } from './components/Layout/index';
 
 import Login from './containers/Login/Login';
 import Forgetpwd from './containers/Login/Forgetpwd';
+import CardType from './containers/CardType/CardType';
 import CardSearch from './containers/CardSearch/CardSearch';
 import CardClass from './containers/CardClass/CardClass';
 
@@ -64,7 +65,7 @@ class App extends Component {
                     <Layout style={{ minHeight: 'calc( 100vh - 64px )', padding: 20 }}>
                       <Content style={{ margin: 0 }}>
                         <Switch>
-                          <Route path={`/card/index`} component={NoMatch} />
+                          <Route path="/card/card-type" component={CardType} />
                           <Route path="/card/card-search" component={CardSearch} />
                           <Route path="/card/card-class" component={CardClass} />
                           <Route component={NoMatch} />
