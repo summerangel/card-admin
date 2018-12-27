@@ -49,14 +49,15 @@ class App extends Component {
             <Route
               exact
               path="/"
-              render={() => (isLoggedIn ? <Redirect to="/card/index" /> : <Login />)}
+              // render={() => (isLoggedIn ? <Redirect to="/card/index" /> : <Login />)}
+              component={Login}
             />
             <Route path={`/login`} component={Login} />
             <Route exact path="/forgetpwd/index" render={() => <Forgetpwd />} />
 
             {/* 卡管理 */}
             <Route
-              // path="/card"
+              path="/card"
               render={({ match: { url }, location }) => (
                 <Layout>
                   <TopHeader />
@@ -77,7 +78,7 @@ class App extends Component {
               )}
             />
             <Route
-              // path="/author"
+              path="/author"
               render={({ match: { url }, location }) => (
                 <Layout>
                   <TopHeader />

@@ -104,7 +104,10 @@ class Login extends React.Component {
                     size="large"
                     htmlType="submit"
                     className="login-form-button"
-                    disabled={true}
+                    disabled={false}
+                    onClick={() => {
+                      this.props.history.push('/card/card-type');
+                    }}
                   >
                     登录
                   </Button>
