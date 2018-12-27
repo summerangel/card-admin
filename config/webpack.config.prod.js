@@ -108,7 +108,7 @@ module.exports = {
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    modules: ['node_modules', paths.appNodeModules].concat(
+    modules: ['node_modules', paths.appNodeModules, paths.appSrc].concat(
       // It is guaranteed to exist because we tweak it in `env.js`
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
@@ -123,6 +123,7 @@ module.exports = {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
+      swiper$: path.resolve(paths.appNodeModules, 'swiper/dist/js/swiper.min.js'),
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -243,7 +244,7 @@ module.exports = {
               {
                 loader: require.resolve('url-loader'),
                 options: {
-                  limit: 1024,
+                  limit: 4096,
                   name: 'static/media/[hash:8].[ext]',
                 },
               },
@@ -375,7 +376,7 @@ module.exports = {
     // solution that requires the user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
-    new webpack.IgnorePlugin(/^\.\/locale\/(?!zh-cn)$/, /moment$/),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
