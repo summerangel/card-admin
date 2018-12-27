@@ -1,56 +1,14 @@
-# operator-pc
+项目运行：
 
-node 版本：v8.\*
+1、安装相关依赖，打开终端执行命令： `yarn`
+2、安装好，在根目录下新建一个文件 .env.local,里面内容：
 
-## http request
-
-### example
-
-```js
-import { request } from './src/modules/request';
-
-request.get('https://example.com', { a: 1, b: 2 }).then(
-  res => {
-    // ...
-  },
-  error => {
-    // ...
-  }
-);
-
-// URL 带参数
-// get: https://example.com/1/2?a=a&b=b
-request.get('https://example.com/:userId/:param2', { a: 'a', b: 'b' }, { restParams: { userId: 1, param2: 2 } }).then(
-  res => {
-    // ...
-  },
-  error => {
-    // ...
-  }
-);
+```javascript
+proxy1=/mock/*=https://dsn.apizza.net
+proxy2=/gw/*=http://gw.freeexchange.cn
+proxy3=/test/*=http://gw.freeexchange.cn
 ```
 
-### proxy
+3、安装好后，运行： `yarn start`,浏览器会自动打开：http://localhost:3000/card/
 
-本地代理请求设置
-
-在根目录下建立 `.env.local` 或 `.env.development.local` 文件，设置代理请求的路径与地址:
-
-```
-proxy1=/api/*=http://test-1.yilou.17shihui.com
-proxy2=/b/*=http://test-2.yilou.17shihui.com
-```
-
-也可以在 `package.json` 文件中设置 `proxy` 字段
-
-```json
-{
-  "proxy": {
-    "/api/*": {
-      "target": "http://yl-phzc.test.yilou.17shihui.com",
-      "secure": false,
-      "changeOrigin": true
-    }
-  }
-}
-```
+4、打包： `yarn run build`, 将生成的 build 文件放到服务器上
