@@ -56,7 +56,7 @@ class App extends Component {
 
             {/* 卡管理 */}
             <Route
-              path="/card"
+              // path="/card"
               render={({ match: { url }, location }) => (
                 <Layout>
                   <TopHeader />
@@ -77,7 +77,7 @@ class App extends Component {
               )}
             />
             <Route
-              path="/author"
+              // path="/author"
               render={({ match: { url }, location }) => (
                 <Layout>
                   <TopHeader />
