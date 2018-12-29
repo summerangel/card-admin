@@ -55,17 +55,6 @@ class Login extends React.Component {
               <Form className="login-form">
                 <div className="login-title">登录</div>
                 <FormItem>
-                  {/*<FormItem validateStatus={mobileError ? 'error' : ''} help={mobileError || ''}>*/}
-                  {/*{getFieldDecorator('email', {*/}
-                  {/*rules: [{ required: true, message: '请输入正确的邮箱' }],*/}
-                  {/*})(*/}
-                  {/*<Input*/}
-                  {/*prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}*/}
-                  {/*placeholder="请输入登录邮箱"*/}
-                  {/*onChange={this.emailChange}*/}
-                  {/*size="large"*/}
-                  {/*/>*/}
-                  {/*)}*/}
                   <Input
                     prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                     placeholder="请输入登录邮箱"
@@ -74,24 +63,12 @@ class Login extends React.Component {
                   />
                 </FormItem>
                 <FormItem validateStatus={passwordError ? 'error' : ''} help={passwordError || ''}>
-                  {/*{getFieldDecorator('password', {*/}
-                  {/*rules: [{ required: true, message: '请输入正确的密码' }],*/}
-                  {/*})(*/}
-                  {/*<InputPwd*/}
-                  {/*prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}*/}
-                  {/*placeholder="请输入密码"*/}
-                  {/*maxLength={20}*/}
-                  {/*minLength={6}*/}
-                  {/*type="password"*/}
-                  {/*size="large"*/}
-                  {/*/>*/}
-                  {/*)}*/}
                   <InputPwd
                     prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                     placeholder="请输入密码"
                     maxLength={20}
                     minLength={6}
-                    type="password"
+                    // type="password"
                     size="large"
                   />
                 </FormItem>
